@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStructureAndAlgorithm", "DataStructureAndAlgorithm\DataStructureAndAlgorithm.csproj", "{4A2D940E-6853-481A-8618-405B7FAB3C2E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mazes", "Mazes\Mazes.csproj", "{B76F1E82-CF1A-4F21-83C4-D6D8EDB89716}"
 EndProject
 Global
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4A2D940E-6853-481A-8618-405B7FAB3C2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4A2D940E-6853-481A-8618-405B7FAB3C2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4A2D940E-6853-481A-8618-405B7FAB3C2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4A2D940E-6853-481A-8618-405B7FAB3C2E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B76F1E82-CF1A-4F21-83C4-D6D8EDB89716}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B76F1E82-CF1A-4F21-83C4-D6D8EDB89716}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B76F1E82-CF1A-4F21-83C4-D6D8EDB89716}.Release|Any CPU.ActiveCfg = Release|Any CPU
