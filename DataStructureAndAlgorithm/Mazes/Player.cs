@@ -37,13 +37,18 @@ namespace Algorithm
 
             _board = board;
 
+            RightHand();
+        }
+
+        void RightHand()
+        {
             int[] frontY = new int[] { -1, 0, 1, 0 };
             int[] frontX = new int[] { 0, -1, 0, 1 };
             int[] rightY = new int[] { 0, -1, 0, 1 };
             int[] rightX = new int[] { 1, 0, -1, 0 };
 
             points.Add(new Pos(PosY, PosX));
-            while (PosX != board.DesX || PosY != board.DesY)
+            while (PosX != _board.DesX || PosY != _board.DesY)
             {
                 // 1. 현재 바라보는 방향을 기준으로 오른쪽 확인
                 if (_board.Tile[PosY + rightY[dir], PosX + rightX[dir]] == Board.TileType.Empty)
