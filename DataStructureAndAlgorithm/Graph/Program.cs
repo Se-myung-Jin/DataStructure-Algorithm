@@ -67,13 +67,44 @@ namespace Graph
                 if (visited[next] == false)
                     DFS2(next);
         }
+
+        public void BFS(int now)
+        {
+            bool[] visited = new bool[6];
+            int[] parent = new int[6];
+            int[] distance = new int[6];
+
+            Queue<int> queue = new Queue<int>();
+            queue.Enqueue(now);
+            visited[now] = true;
+            parent[now] = now;
+            distance[now] = 0;
+
+            while (queue.Count > 0)
+            {
+                int cur = queue.Dequeue();
+                Console.WriteLine(cur);
+
+                for (int next = 0; next < 6; ++next)
+                {
+                    if (adj[cur, next] == 0)
+                        continue;
+                    if (visited[next])
+                        continue;
+                    queue.Enqueue(next);
+                    visited[next] = true;
+                    parent[next] = cur;
+                    distance[next] = distance[cur] + 1;
+                }
+            }
+        }
     }
     class Program
     {
         static void Main(string[] args)
         {
             Graph graph = new Graph();
-            graph.SearchAll();
+            graph.BFS(0);
         }
     }
 }
