@@ -38,7 +38,98 @@ namespace Algorithm
             _board = board;
 
             //RightHand();
-            BFS();
+            //BFS();
+            AStar();
+        }
+
+        class PriorityQueueNode : IComparable<PriorityQueueNode>
+        {
+            public int F;
+            public int G;
+            public int Y;
+            public int X;
+
+            public int CompareTo(PriorityQueueNode other)
+            {
+                if (F == other.F)
+                    return 0;
+                return F < other.F ? 1 : -1;
+            }
+        }
+        public void AStar()
+        {
+            int[] deltaY = new int[] { -1, 0, 1, 0 };
+            int[] deltaX = new int[] { 0, -1, 0, 1 };
+            int[] cost = new int[] { 1, 1, 1, 1 };
+
+            // 점수 매기기
+            // F (최종 점수) = G(시작점에서 해당 좌표까지 드는 비용) + H(목적지에서 얼마나 가까운지)
+
+            // (y, x) 이미 방문했는지 여부(방문 = closed 상태)
+            bool[,] closed = new bool[_board.Size, _board.Size];
+
+            // (y, x) 가는 길을 한 번이라도 발견했는지
+            // 발견X => MaxValue , 발견 F = G + H 
+            int[,] open = new int[_board.Size, _board.Size];
+            for (int y = 0; y < _board.Size; y++)
+                for (int x = 0; x < _board.Size; x++)
+                    open[y, x] = Int32.MaxValue;
+
+            Pos[,] parent = new Pos[_board.Size, _board.Size];
+
+            // 오픈 리스트에 있는 노드 중 가장 좋은 후보를 뽑기 위한 도구
+            PriorityQueue<PriorityQueueNode> pq = new PriorityQueue<PriorityQueueNode>();
+            
+            // 시작점 발견
+            open[PosY, PosX] = Math.Abs(_board.DesY - PosY) + Math.Abs(_board.DesX - PosX);
+            pq.Push(new PriorityQueueNode() { F = Math.Abs(_board.DesY - PosY) + Math.Abs(_board.DesX - PosX) , G = 0, Y = PosY, X = PosX});
+            parent[PosY, PosX] = new Pos(PosY, PosX);
+
+            while (pq.Count() > 0)
+            {
+                // 제일 좋은 후보를 찾는다
+                PriorityQueueNode pqNode = pq.Pop();
+                // 동일한 좌표를 여러 경로로 찾아서, 더 빠른 경로로 인해 이미 방문(closed)된 경우 스킵
+                if (closed[pqNode.Y, pqNode.X])
+                    continue;
+
+                // 방문한다
+                closed[pqNode.Y, pqNode.X] = true;
+                // 목적지 도착하면 종료
+                if (pqNode.Y == _board.DesY && pqNode.X == _board.DesX)
+                    break;
+
+                // 상하좌우 등 이동할 수 있는 좌표인지 확인 후 예약(open)한다
+                for (int i = 0; i < deltaY.Length; ++i)
+                {
+                    int nextY = pqNode.Y + deltaY[i];
+                    int nextX = pqNode.X + deltaX[i];
+
+                    // 유효 범위 조건 검사
+                    if (nextX < 0 || nextX >= _board.Size || nextY < 0 || nextY >= _board.Size)
+                        continue;
+                    // 벽 조건 검사
+                    if (_board.Tile[nextY, nextX] == Board.TileType.Wall)
+                        continue;
+                    // 이미 방문했는지 검사
+                    if (closed[nextY, nextX])
+                        continue;
+
+                    // 비용 계산
+                    int g = pqNode.G + cost[i];
+                    int h = Math.Abs(_board.DesY - nextY) + Math.Abs(_board.DesX - nextX);
+                    // 다른 경로에서 더 빠른 길 이미 찾았는지 검사
+                    if (open[nextY, nextX] < g + h)
+                        continue;
+
+                    // 예약 진행
+                    open[nextY, nextX] = g + h;
+                    pq.Push(new PriorityQueueNode() { F = g + h, G = g, Y = nextY, X = nextX });
+                    parent[nextY, nextX] = new Pos(pqNode.Y, pqNode.X);
+                }
+            }
+
+            CalcPathFromParent(parent);
         }
 
         void BFS()
@@ -80,6 +171,11 @@ namespace Algorithm
                 }
             }
 
+            CalcPathFromParent(parent);
+        }
+
+        void CalcPathFromParent(Pos[,] parent)
+        {
             int destY = _board.DesY;
             int destX = _board.DesX;
             while (parent[destY, destX].Y != destY || parent[destY, destX].X != destX)
