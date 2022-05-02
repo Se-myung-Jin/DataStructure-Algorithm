@@ -58,9 +58,9 @@ namespace Algorithm
         }
         public void AStar()
         {
-            int[] deltaY = new int[] { -1, 0, 1, 0 };
-            int[] deltaX = new int[] { 0, -1, 0, 1 };
-            int[] cost = new int[] { 1, 1, 1, 1 };
+            int[] deltaY = new int[] { -1, 0, 1, 0, -1, 1, 1, -1  };
+            int[] deltaX = new int[] { 0, -1, 0, 1, -1, -1, 1, 1 };
+            int[] cost = new int[] { 10, 10, 10, 10, 14, 14, 14, 14 };
 
             // 점수 매기기
             // F (최종 점수) = G(시작점에서 해당 좌표까지 드는 비용) + H(목적지에서 얼마나 가까운지)
@@ -81,8 +81,8 @@ namespace Algorithm
             PriorityQueue<PriorityQueueNode> pq = new PriorityQueue<PriorityQueueNode>();
             
             // 시작점 발견
-            open[PosY, PosX] = Math.Abs(_board.DesY - PosY) + Math.Abs(_board.DesX - PosX);
-            pq.Push(new PriorityQueueNode() { F = Math.Abs(_board.DesY - PosY) + Math.Abs(_board.DesX - PosX) , G = 0, Y = PosY, X = PosX});
+            open[PosY, PosX] = 10 * (Math.Abs(_board.DesY - PosY) + Math.Abs(_board.DesX - PosX));
+            pq.Push(new PriorityQueueNode() { F = 10 * (Math.Abs(_board.DesY - PosY) + Math.Abs(_board.DesX - PosX)), G = 0, Y = PosY, X = PosX});
             parent[PosY, PosX] = new Pos(PosY, PosX);
 
             while (pq.Count() > 0)
@@ -117,7 +117,7 @@ namespace Algorithm
 
                     // 비용 계산
                     int g = pqNode.G + cost[i];
-                    int h = Math.Abs(_board.DesY - nextY) + Math.Abs(_board.DesX - nextX);
+                    int h = 10 * (Math.Abs(_board.DesY - nextY) + Math.Abs(_board.DesX - nextX));
                     // 다른 경로에서 더 빠른 길 이미 찾았는지 검사
                     if (open[nextY, nextX] < g + h)
                         continue;
@@ -233,7 +233,12 @@ namespace Algorithm
         public void Update(int deltaTick)
         {
             if (lastIndex >= points.Count)
-                return;
+            {
+                lastIndex = 0;
+                points.Clear();
+                _board.Initialize(_board.Size, this);
+                Initialize(1, 1, _board);
+            }
 
             _sumTick += deltaTick;
             if (_sumTick > MOVE_TICK)
