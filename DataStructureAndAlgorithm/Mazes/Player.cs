@@ -37,7 +37,61 @@ namespace Algorithm
 
             _board = board;
 
-            RightHand();
+            //RightHand();
+            BFS();
+        }
+
+        void BFS()
+        {
+            int[] deltaY = new int[] { -1, 0, 1, 0 };
+            int[] deltaX = new int[] { 0, -1, 0, 1 };
+
+            bool[,] found = new bool[_board.Size, _board.Size];
+            // 경로 기록
+            Pos[,] parent = new Pos[_board.Size, _board.Size];
+
+
+            Queue<Pos> queue = new Queue<Pos>();
+            queue.Enqueue(new Pos(PosY, PosX));
+            found[PosY, PosX] = true;
+            parent[PosY, PosX] = new Pos(PosY, PosX);
+
+            while (queue.Count > 0)
+            {
+                Pos pos = queue.Dequeue();
+                int nowY = pos.Y;
+                int nowX = pos.X;
+
+                for (int i = 0; i < 4; ++i)
+                {
+                    int nextY = nowY + deltaY[i];
+                    int nextX = nowX + deltaX[i];
+
+                    if (nextX < 0 || nextX >= _board.Size || nextY < 0 || nextY >= _board.Size)
+                        continue;
+                    if (_board.Tile[nextY, nextX] == Board.TileType.Wall)
+                        continue;
+                    if (found[nextY, nextX])
+                        continue;
+
+                    queue.Enqueue(new Pos(nextY, nextX));
+                    found[nextY, nextX] = true;
+                    parent[nextY, nextX] = new Pos(nowY, nowX);
+                }
+            }
+
+            int destY = _board.DesY;
+            int destX = _board.DesX;
+            while (parent[destY, destX].Y != destY || parent[destY, destX].X != destX)
+            {
+                points.Add(new Pos(destY, destX));
+                Pos pos = parent[destY, destX];
+                destY = pos.Y;
+                destX = pos.X;
+            }
+            // 시작점 추가
+            points.Add(new Pos(destY, destX));
+            points.Reverse();
         }
 
         void RightHand()
